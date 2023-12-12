@@ -2055,6 +2055,51 @@ class EncDec_8B10B(object):
         "DEC8b10bERR" 	# "1111111111"
     ]
 
+#     Input	RD = −1	RD = +1
+# Symbol	DEC	HEX	HGF EDCBA	abcdei fghj	abcdei fghj
+# K.28.0	28	1C	000 11100	001111 0100	110000 1011
+# K.28.1 †	60	3C	001 11100	001111 1001	110000 0110
+# K.28.2 	92	5C	010 11100	001111 0101	110000 1010
+# K.28.3 	124	7C	011 11100	001111 0011	110000 1100
+# K.28.4 	156	9C	100 11100	001111 0010	110000 1101
+# K.28.5 †	188	BC	101 11100	001111 1010	110000 0101
+# K.28.6 	220	DC	110 11100	001111 0110	110000 1001
+# K.28.7 ‡	252	FC	111 11100	001111 1000	110000 0111
+# K.23.7 	247	F7	111 10111	111010 1000	000101 0111
+# K.27.7 	251	FB	111 11011	110110 1000	001001 0111
+# K.29.7 	253	FD	111 11101	101110 1000	010001 0111
+# K.30.7 	254	FE	111 11110	011110 1000	100001 0111
+
+    k_code_map = {
+         "K.28.0": "0x1C",
+         "K.28.1": "0x3C",
+         "K.28.2": "0x5C",
+         "K.28.3": "0x7C",
+         "K.28.4": "0x9C",
+         "K.28.5": "0xBC",
+         "K.28.6": "0xDC",
+         "K.28.7": "0xFC",
+         "K.23.7": "0xF7",
+         "K.27.7": "0xFB",
+         "K.29.7": "0xFD",
+         "K.30.7": "0xFE",
+        }
+
+    k_code_ctrl = {
+         "SR": "0x1C",
+         "CP": "0x3C",
+         "SS": "0x5C",
+         "BF": "0x7C",
+         "RESERVED": "0x9C",
+         "BS": "0xBC",
+         "EOC": "0xDC",
+         "RESERVED": "0xFC",
+         "FE": "0xF7",
+         "BE": "0xFB",
+         "SE": "0xFD",
+         "FS": "0xFE",
+    }
+
     @staticmethod
     def enc_8b10b(data_in, running_disparity, ctrl=0, verbose=False):
         assert data_in <= 0xFF, "Data in must be maximum one byte"
@@ -2080,4 +2125,3 @@ class EncDec_8B10B(object):
             print("Decoded: {:02X} - Control: {:01b}".format(decoded, ctrl))
 
         return ctrl, decoded
-
