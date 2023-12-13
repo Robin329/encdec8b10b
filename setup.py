@@ -9,7 +9,7 @@ setuptools.setup(
     packages=setuptools.find_packages(),
     url='https://github.com/Robin329/encdec8b10b',
     license='MIT',
-    author='Renbin.jiang',
+    author='Ola Grøttvik',
     author_email='jiangrenbin123@gmail.com',
     description='8B10B Encoding and Decoding',
     long_description=long_description,

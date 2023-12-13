@@ -19,7 +19,7 @@ enc_dec_8b10b_version_minor = 1
 def encode_8b10b_print(input):
         en_hex = hex(int(input, 16))
         en_oct = int(input, 16)
-        en_binary = bin(en_oct)
+        en_binary = format(en_oct, '08b')
 
         # print(type(en_hex))
 
@@ -42,7 +42,7 @@ def encode_8b10b_print(input):
         enr3_hex_post = hex(enr3_oct_post)
         # print(en_hex)
         # print(en_oct)
-        # print(en_binary)
+        print(en_binary)
 
         found_key_code = None
         found_ctrl_code = None
@@ -58,31 +58,158 @@ def encode_8b10b_print(input):
                 # print(key)
                 break  # 找到值后可以提前退出循环
 
+        found_key_code_HGF = None
+        found_key_code_EDCBA = None
+        enc_ctrl_symbol_5b6b = None
+        enc_ctrl_symbol_3b4b = None
+        enc_bin_EDCBA = en_binary[-5:]
+        enc_bin_HGF = en_binary[:-5]
 
-        print(" __________________________________________________________________________________________________________________")
-        print("|                                                    Little Endian                                                |")
-        print("|---------------------------------------------------------------------------------|---------------------|---------|")
-        print("|               input           |         RD=-1          |      RD=+1             |                     |         |")
-        print("|---------------------------------------------------------------------------------|---------------------|---------|")
-        print("|                                    012345 6789         |   012345 6789          |                     |         |")
-        print("| id | dec | hex |  HGF EDCBA   |    abcdei fghj |  hex  |   abcdei fghj  |  hex  | Control Link Symbol |  K-code |")
+        print("enc_bin_EDCBA="+enc_bin_EDCBA)
+        print(enc_bin_HGF)
+        for key, sub_dict in EncDec8B10B.code_5b6b_abcdei.items():
+            if enc_bin_EDCBA == key:
+                for sub_key, sub_value in sub_dict.items():
+                    enc_ctrl_symbol_5b6b = sub_value
+                    break
+                found_key_code_EDCBA = key
+                # print("---" + sub_key)
+                break  # 找到值后可以提前退出循环
+        print('++++'+found_key_code_EDCBA)
+        print('++++'+enc_ctrl_symbol_5b6b)
+
+        for key, sub_dict in EncDec8B10B.code_3b_4b_fghj.items():
+            # print(sub_dict)
+            if enc_bin_HGF == key:
+                for sub_key, sub_value in sub_dict.items():
+                        enc_ctrl_symbol_3b4b = sub_value
+                        # print("---" + sub_value)
+                        # print('----' + sub_key)
+                        break  # 找到值后可以提前退出循环
+                found_key_code_HGF = key
+                break
+        print('++++'+found_key_code_HGF)
+        print('++++'+enc_ctrl_symbol_3b4b)
+        enc_ctrl_code_result = enc_ctrl_symbol_3b4b.replace('x', enc_ctrl_symbol_5b6b[2:])
+        print(" ___________________________________________________________________________________________________________________________")
+        print("|                                                    Little Endian                                                |         |")
+        print("|---------------------------------------------------------------------------------|---------------------|---------|---------|")
+        print("|               input           |         RD=-1          |      RD=+1             |                     |         |         |")
+        print("|---------------------------------------------------------------------------------|---------------------|---------|---------|")
+        print("|                                    012345 6789         |   012345 6789          |                     |         |         |")
+        print("| id | dec | hex |  HGF EDCBA   |    abcdei fghj |  hex  |   abcdei fghj  |  hex  | Control Link Symbol |  K-code |   Code  |")
         pre = (0 << 0)
-        print("   {}   {}   {}   {}         {}    {}     {}     {}        '{}'              '{}'".format(pre, en_oct,en_hex, format(en_oct, '08b'), format(enr0_oct_post, '010b')[::-1],enr0_hex_post , format(enr1_oct_post, '010b')[::-1], enr1_hex_post, found_ctrl_code, found_key_code))
+        print("   {}   {}   {}   {}         {}    {}     {}     {}        '{}'              '{}' '{}".format(pre, en_oct,en_hex, format(en_oct, '08b'), format(enr0_oct_post, '010b')[::-1],enr0_hex_post , format(enr1_oct_post, '010b')[::-1], enr1_hex_post, found_ctrl_code, found_key_code, enc_ctrl_code_result))
         pre = (1 << 0)
-        print("   {}   {}   {}   {}         {}    {}     {}     {}        '{}'              '{}'".format(pre, en_oct,en_hex, format(en_oct, '08b'), format(enr2_oct_post, '010b')[::-1], enr2_hex_post, format(enr3_oct_post, '010b')[::-1], enr3_hex_post, found_ctrl_code, found_key_code))
+        print("   {}   {}   {}   {}         {}    {}     {}     {}        '{}'              '{}' '{}".format(pre, en_oct,en_hex, format(en_oct, '08b'), format(enr2_oct_post, '010b')[::-1], enr2_hex_post, format(enr3_oct_post, '010b')[::-1], enr3_hex_post, found_ctrl_code, found_key_code, enc_ctrl_code_result))
         print()
-        print(" _________________________________________________________________________________________________________________")
-        print("|                                                    Big Endian                                                   |")
-        print("|---------------------------------------------------------------------------------|---------------------|---------|")
-        print("|               input           |         RD=-1          |      RD=+1             |                     |         |")
-        print("|---------------------------------------------------------------------------------|---------------------|---------|")
-        print("|                                    0123 456789         |   0123 456789          |                     |         |")
-        print("| id | dec | hex |  HGF EDCBA   |    jhgf iedcba |  hex  |   jhgf iedcba  |  hex  | Control Link Symbol |  K-code |")
+        print(" ___________________________________________________________________________________________________________________________")
+        print("|                                                    Big Endian                                                   |         |")
+        print("|---------------------------------------------------------------------------------|---------------------|---------|---------|")
+        print("|               input           |         RD=-1          |      RD=+1             |                     |         |         |")
+        print("|---------------------------------------------------------------------------------|---------------------|---------|---------|")
+        print("|                                    0123 456789         |   0123 456789          |                     |         |         |")
+        print("| id | dec | hex |  HGF EDCBA   |    jhgf iedcba |  hex  |   jhgf iedcba  |  hex  | Control Link Symbol |  K-code |   Code  |")
         pre = (0 << 0)
-        print("   {}   {}   {}   {}          {}     {}     {}       {}        '{}'             '{}'".format(pre, en_oct,en_hex, format(en_oct, '08b'), format(enr0_oct_post, '010b'), hex(int(format(enr0_oct_post, '010b')[::-1], 2)) , format(enr1_oct_post, '010b'), hex(int(format(enr1_oct_post, '010b')[::-1], 2)), found_ctrl_code, found_key_code) )
+        print("   {}   {}   {}   {}          {}     {}     {}       {}        '{}'             '{}' '{}".format(pre, en_oct,en_hex, format(en_oct, '08b'), format(enr0_oct_post, '010b'), hex(int(format(enr0_oct_post, '010b')[::-1], 2)) , format(enr1_oct_post, '010b'), hex(int(format(enr1_oct_post, '010b')[::-1], 2)), found_ctrl_code, found_key_code, enc_ctrl_code_result) )
         pre = (1 << 0)
-        print("   {}   {}   {}   {}          {}     {}     {}       {}        '{}'             '{}'".format(pre, en_oct,en_hex, format(en_oct, '08b'), format(enr2_oct_post, '010b'), hex(int(format(enr2_oct_post, '010b')[::-1], 2)) , format(enr3_oct_post, '010b'), hex(int(format(enr3_oct_post, '010b')[::-1], 2)), found_ctrl_code, found_key_code) )
+        print("   {}   {}   {}   {}          {}     {}     {}       {}        '{}'             '{}' '{}".format(pre, en_oct,en_hex, format(en_oct, '08b'), format(enr2_oct_post, '010b'), hex(int(format(enr2_oct_post, '010b')[::-1], 2)) , format(enr3_oct_post, '010b'), hex(int(format(enr3_oct_post, '010b')[::-1], 2)), found_ctrl_code, found_key_code, enc_ctrl_code_result) )
         print("------------------------------------------------------------------------------------------------------------------")
+        print()
+        print()
+
+def decode_8b10b_print(input):
+        dec_hex = hex(int(input, 16))
+        dec_oct = int(input, 16)
+        dec_binary = format(dec_oct, '010b')
+        # print(dec_binary)
+        # dec_abcdei = dec_binary[:-4]
+        # print(dec_abcdei)
+        dec_hex_reverse = hex(int(format(dec_oct, '010b')[::-1], 2))
+        dec_dec_reverse = int(dec_hex_reverse, 16)
+        dec_bin_reverse = format(dec_dec_reverse, '010b')
+
+        # print("dec_bin_reverse = "+dec_bin_reverse)
+        dec_bin_abcdei = dec_bin_reverse[:-4]
+        dec_bin_fghj = dec_bin_reverse[-4:]
+        # print(dec_bin_abcdei)
+
+        found_key_code_HGF = None
+        found_key_code_EDCBA = None
+        dec_ctrl_symbol_5b6b = None
+        dec_ctrl_symbol_3b4b = None
+        # print(dec_bin_fghj)
+        for key, sub_dict in EncDec8B10B.code_5b6b_abcdei.items():
+            for sub_key, sub_value in sub_dict.items():
+                if str(dec_bin_abcdei) in sub_key:
+                    found_key_code_EDCBA = sub_value
+                    # print("---" + sub_value)
+                    # print("---" + sub_key)
+                    break  # 找到值后可以提前退出循环
+            if found_key_code_EDCBA:
+                break
+        # print('++++'+key)
+        dec_ctrl_symbol_5b6b = sub_value
+        dec_EDCBA = key
+        for key, sub_dict in EncDec8B10B.code_3b_4b_fghj.items():
+            # print(sub_dict)
+            for sub_key, sub_value in sub_dict.items():
+                if str(dec_bin_fghj) in sub_key:
+                    found_key_code_HGF = sub_value
+                    # print("---" + sub_value)
+                    # print('----' + sub_key)
+                    break  # 找到值后可以提前退出循环
+            if found_key_code_HGF:
+                break
+        # print('++++'+key)
+        dec_ctrl_symbol_3b4b = sub_value
+        dec_HGF = key
+
+        dec_bin_result = dec_HGF + dec_EDCBA
+        dec_hex_result = hex(int(dec_bin_result, 2))
+        dec_dec_result = int(dec_bin_result, 2)
+
+        # print(dec_bin_result)
+        # print(dec_hex_result)
+
+        dec_symbol_result = dec_ctrl_symbol_3b4b.replace('x', dec_ctrl_symbol_5b6b[2:])
+        # print(dec_symbol_result)
+
+        dec_hex_post = 0
+        dec_oct_post = 0
+        # ctrl, decoded = EncDec8B10B.dec_8b10b(dec_oct)
+        # # print("--")
+        # # print(decoded)
+        # dec_oct_post = int(decoded)
+        # dec_hex_post = hex(decoded)
+
+        # ctrl, decoded = EncDec8B10B.dec_8b10b(dec_dec_reverse)
+        # # print("--")
+        # # print(decoded)
+        # dec_reverse_oct_post = int(decoded)
+        # dec_reverse_hex_post = hex(decoded)
+
+
+        found_key_code = None
+        found_ctrl_code = None
+        for key, value in EncDec8B10B.k_code_map.items():
+            # print(value)
+            if int(value, 16) == int(dec_hex_result, 16):
+                found_key_code = key
+                # print(key)
+                break  # 找到值后可以提前退出循环
+        for key, value in EncDec8B10B.k_code_ctrl.items():
+            if int(value, 16) == int(dec_hex_result, 16):
+                found_ctrl_code = key
+                # print(key)
+                break  # 找到值后可以提前退出循环
+        # print(found_ctrl_code)
+        print(" ___________________________________________________________________________________________________________________________")
+        print("|              input             |                     output                     |                     |         |         |")
+        print("|---------------------------------------------------------------------------------|---------------------|---------|---------|")
+        print("|                  012345 6789   |         |         |         765 43210          |                     |         |         |")
+        print("|  hex  |  dec |   abcdei fghj   |   dec   |    hex  |         HGF EDCBA          | Control Link Symbol |  K-code |   Code  |")
+        print("   {}    {}      {}        {}       {}            {}                    '{}'           '{}'  '{}".format(dec_hex, dec_oct, format(dec_oct, '010b')[::-1], dec_dec_result, dec_hex_result, dec_bin_result,found_ctrl_code, found_key_code, dec_symbol_result))
         print()
         print()
 def main():
@@ -131,50 +258,7 @@ def main():
         encode_8b10b_print(args.encode)
 
     if args.decode:
-        dec_hex = hex(int(args.decode, 16))
-        dec_oct = int(args.decode, 16)
-        dec_binary = bin(dec_oct)
-        dec_hex_reverse = hex(int(format(dec_oct, '010b')[::-1], 2))
-        dec_dec_reverse = int(dec_hex_reverse, 16)
-        # print(args.decode)
-        # print(hex(int(args.decode, 16)))
-        # print(dec_hex_reverse)
-
-        ctrl, decoded = EncDec8B10B.dec_8b10b(dec_oct)
-        # print("--")
-        # print(decoded)
-        dec_oct_post = int(decoded)
-        dec_hex_post = hex(decoded)
-
-        ctrl, decoded = EncDec8B10B.dec_8b10b(dec_dec_reverse)
-        # print("--")
-        # print(decoded)
-        dec_reverse_oct_post = int(decoded)
-        dec_reverse_hex_post = hex(decoded)
-
-
-        found_key_code = None
-        found_ctrl_code = None
-        for key, value in EncDec8B10B.k_code_map.items():
-            # print(value)
-            if int(value, 16) == int(dec_hex_post, 16):
-                found_key_code = key
-                # print(key)
-                break  # 找到值后可以提前退出循环
-        for key, value in EncDec8B10B.k_code_ctrl.items():
-            if int(value, 16) == int(dec_hex_post, 16):
-                found_ctrl_code = key
-                # print(key)
-                break  # 找到值后可以提前退出循环
-        print(found_ctrl_code)
-        print(" _________________________________________________________________________________________________________________")
-        print("|              input             |                     output                     |                     |         |")
-        print("|---------------------------------------------------------------------------------|---------------------|---------|")
-        print("|                  012345 6789   |         |         |         765 43210          |                     |         |")
-        print("|  hex  |  dec |   abcdei fghj   |   dec   |    hex  |         HGF EDCBA          | Control Link Symbol |  K-code |")
-        print("   {}    {}      {}        {}       {}            {}                    '{}'           '{}'".format(dec_hex, dec_oct, format(dec_oct, '010b')[::-1], dec_oct_post, dec_hex_post, format(dec_oct_post, '08b'), found_ctrl_code, found_key_code))
-        print()
-        print()
+        decode_8b10b_print(args.decode)
 
     if args.ctrl:
         input_key = args.ctrl
