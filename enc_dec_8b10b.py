@@ -42,7 +42,7 @@ def encode_8b10b_print(input):
         enr3_hex_post = hex(enr3_oct_post)
         # print(en_hex)
         # print(en_oct)
-        print(en_binary)
+        # print(en_binary)
 
         found_key_code = None
         found_ctrl_code = None
@@ -65,8 +65,8 @@ def encode_8b10b_print(input):
         enc_bin_EDCBA = en_binary[-5:]
         enc_bin_HGF = en_binary[:-5]
 
-        print("enc_bin_EDCBA="+enc_bin_EDCBA)
-        print(enc_bin_HGF)
+        # print("enc_bin_EDCBA="+enc_bin_EDCBA)
+        # print(enc_bin_HGF)
         for key, sub_dict in EncDec8B10B.code_5b6b_abcdei.items():
             if enc_bin_EDCBA == key:
                 for sub_key, sub_value in sub_dict.items():
@@ -75,8 +75,8 @@ def encode_8b10b_print(input):
                 found_key_code_EDCBA = key
                 # print("---" + sub_key)
                 break  # 找到值后可以提前退出循环
-        print('++++'+found_key_code_EDCBA)
-        print('++++'+enc_ctrl_symbol_5b6b)
+        # print('++++'+found_key_code_EDCBA)
+        # print('++++'+enc_ctrl_symbol_5b6b)
 
         for key, sub_dict in EncDec8B10B.code_3b_4b_fghj.items():
             # print(sub_dict)
@@ -88,8 +88,8 @@ def encode_8b10b_print(input):
                         break  # 找到值后可以提前退出循环
                 found_key_code_HGF = key
                 break
-        print('++++'+found_key_code_HGF)
-        print('++++'+enc_ctrl_symbol_3b4b)
+        # print('++++'+found_key_code_HGF)
+        # print('++++'+enc_ctrl_symbol_3b4b)
         enc_ctrl_code_result = enc_ctrl_symbol_3b4b.replace('x', enc_ctrl_symbol_5b6b[2:])
         print(" ___________________________________________________________________________________________________________________________")
         print("|                                                    Little Endian                                                |         |")
